@@ -10,14 +10,29 @@ app.get('/zagster', (request, response) => {
     connectionString: DATABASE_URL,
   })
 
-  pool.query('SELECT * FROM rides LIMIT 1', (err, results) => {
+  pool.query('SELECT * FROM rides', (err, results) => {
+    response.send(results)
+    pool.end()
+  })
+})
+
+
+
+app.get('/rides/count', (request, response) => {
+  const pool = new Pool({
+    connectionString: DATABASE_URL,
+  })
+
+  pool.query('SELECT COUNT(*) FROM rides', (err, results) => {
+	console.log("Requested rides")
+	console.log(err)
     response.send(results.rows[0])
     pool.end()
   })
 })
 
 app.get('/', (request, response) => {
-  response.send('I am listening!')
+  response.send("Listening")
 })
 
 app.get('/ice_cream', (request,response) => response.send("Mint ice cream"))
@@ -33,7 +48,7 @@ app.get('/wright', (request,response) => response.send("Pasta"))
 app.get('/Stewart', (request,response) => response.send("My dogs"))
 app.get('/Bertram', (request,response) => response.send("Fire Hue"))
 app.get('/kolb', (request,response) => response.send("Nice"))
-app.get('/best_town', (request, response) => response.send('Bend, obviously'))
+app.get('/best_town', (request, response) => response.send("Bend, obviously"))
 app.get('/football_team', (request,response) => response.send("LA Chargers"))
 app.get('/cookie_dough', (request,response) => response.send("rocky road"))
 app.get('/YOTE', (request,response) => response.send("YEEEET"))
