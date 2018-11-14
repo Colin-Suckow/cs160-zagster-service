@@ -15,7 +15,7 @@ app.use(function(req, res, next) {
 
 app.get('/zagster', (request, response) => {
   
-  var limit = req.query.limit;
+  var limit = request.query.limit;
 
   const pool = new Pool({
     connectionString: DATABASE_URL,
