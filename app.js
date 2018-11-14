@@ -10,11 +10,26 @@ app.get('/zagster', (request, response) => {
     connectionString: DATABASE_URL,
   })
 
-  pool.query('SELECT * FROM rides', (err, results) => {
+  pool.query('SELECT * FROM rides LIMIT 100;', (err, results) => {
     response.send(results)
     pool.end()
   })
 })
+
+app.get('/search/:term', (req, res) => {
+	
+	var term = req.params.term
+	
+	const pool = new Pool({
+    connectionString: DATABASE_URL,
+  })
+
+  pool.query("SELECT DISTINCT user_id FROM rides WHERE membership_name LIKE '%" + term + "%';", (err, results) => {
+    res.send(results.rows)
+    pool.end()
+  }) 
+})
+
 
 
 
@@ -23,7 +38,7 @@ app.get('/rides/count', (request, response) => {
     connectionString: DATABASE_URL,
   })
 
-  pool.query('SELECT COUNT(*) FROM rides', (err, results) => {
+  pool.query('SELECT COUNT(*) FROM rides;', (err, results) => {
 	console.log("Requested rides")
 	console.log(err)
     response.send(results.rows[0])
