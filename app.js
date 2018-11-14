@@ -14,19 +14,29 @@ app.use(function(req, res, next) {
 });
 
 app.get('/zagster', (request, response) => {
+  
+  var limit = req.query.limit;
+
   const pool = new Pool({
     connectionString: DATABASE_URL,
   })
 
-  pool.query('SELECT * FROM rides LIMIT 100;', (err, results) => {
-    response.send(results)
-    pool.end()
-  })
+  if(limit) {
+    pool.query(`SELECT * FROM rides LIMIT ${limit};`, (err, results) => {
+      response.send(results)
+      pool.end()
+    })
+  } else {
+    pool.query('SELECT * FROM rides;', (err, results) => {
+      response.send(results)
+      pool.end()
+    })
+  }
 })
 
-app.get('/search/:term', (req, res) => {
+app.get('/search', (req, res) => {
 	
-	var term = req.params.term
+	var term = req.query.q
 	
 	const pool = new Pool({
     connectionString: DATABASE_URL,
