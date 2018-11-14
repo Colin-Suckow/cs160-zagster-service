@@ -21,7 +21,7 @@ app.get('/zagster', (request, response) => {
     connectionString: DATABASE_URL,
   })
 
-  if(limit) {
+  if(limit != null && limit != '') {
     pool.query(`SELECT * FROM rides LIMIT ${limit};`, (err, results) => {
       response.send(results)
       pool.end()
