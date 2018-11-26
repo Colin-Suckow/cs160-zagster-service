@@ -57,7 +57,7 @@ app.get('/rides/day', (req, res) => {
 
   if(date != null && date != "") {
     pool.query(`SELECT user_id, start_lat, start_lon, end_lat, end_lon FROM rides WHERE CONVERT(DATETIME, FLOOR(CONVERT(FLOAT, start_date))) = ${date};`, (err, results) => {
-      if(results.rows != null) {
+      if(results != null) {
         res.send(results.rows);
         pool.end();
       } else {
