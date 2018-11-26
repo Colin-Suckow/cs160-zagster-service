@@ -56,14 +56,15 @@ app.get('/rides/day', (req, res) => {
   });
 
   if(date != null && date != "") {
-    pool.query(`SELECT user_id, start_lat, start_lon, end_lat, end_lon FROM rides WHERE CONVERT(DATETIME, FLOOR(CONVERT(FLOAT, start_date))) = ${date};`, (err, results) => {
-      if(results != null) {
-        res.send(results.rows);
-        pool.end();
-      } else {
-        res.send("no data");
-        pool.end();
-      }
+    pool.query(`SELECT user_id, start_lat, start_lon, end_lat, end_lon FROM rides WHERE date_trunc('day', start_time) = '${date}'
+      AND start_lat IS NOT NULL AND start_lon IS NOT NULL AND end_lat IS NOT NULL AND end_lon IS NOT NULL;`, (err, results) => {
+        if(results != null) {
+          res.send(results.rows);
+          pool.end();
+        } else {
+          res.send(err);
+          pool.end();
+        }
       
     })
   } else {
