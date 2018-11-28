@@ -13,7 +13,7 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.get('/zagster', (request, response) => {
+app.get('/rides', (request, response) => {
   
   var limit = request.query.limit;
 
@@ -57,6 +57,31 @@ app.get('/rides/day', (req, res) => {
 
   if(date != null && date != "") {
     pool.query(`SELECT user_id, start_lat, start_lon, end_lat, end_lon FROM rides WHERE date_trunc('day', start_time) = '${date}'
+      AND start_lat IS NOT NULL AND start_lon IS NOT NULL AND end_lat IS NOT NULL AND end_lon IS NOT NULL;`, (err, results) => {
+        if(results != null) {
+          res.send(results.rows);
+          pool.end();
+        } else {
+          res.send(err);
+          pool.end();
+        }
+      
+    })
+  } else {
+    pool.end();
+    res.send("no date");
+  }
+})
+
+app.get('/rides/day/count', (req, res) => {
+  var date = req.query.date;
+
+  const pool = new Pool({
+    connectionString: DATABASE_URL
+  });
+
+  if(date != null && date != "") {
+    pool.query(`SELECT count(*) FROM rides WHERE date_trunc('day', start_time) = '${date}'
       AND start_lat IS NOT NULL AND start_lon IS NOT NULL AND end_lat IS NOT NULL AND end_lon IS NOT NULL;`, (err, results) => {
         if(results != null) {
           res.send(results.rows);
